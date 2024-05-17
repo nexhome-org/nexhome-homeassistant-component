@@ -4,7 +4,7 @@
   "codeowners": ["linzh"],
   "config_flow": true,
   "dependencies": [],
-  "documentation": "",
-  "issue_tracker": "",
+  "documentation": "https://github.com/nexhome-org/nexhome-homeassistant-component/blob/main/README.md",
+  "issue_tracker": "https://github.com/nexhome-org/nexhome-homeassistant-component/issues",
   "version": "0.1.0"
 }
