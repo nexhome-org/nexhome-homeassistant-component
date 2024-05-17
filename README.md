@@ -56,7 +56,6 @@
 
 ## 调试
 ```
-
 # 调试
 要打开调试日志输出, 在configuration.yaml中做如下配置
 ```yaml
