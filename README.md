@@ -55,8 +55,6 @@
 将中控网关接入到家庭局域网中，通过**施工APP**或**AIHome**获取IP地址和SN，输入到配置项即可
 
 ## 调试
-```
-# 调试
 要打开调试日志输出, 在configuration.yaml中做如下配置
 ```yaml
 logger:
