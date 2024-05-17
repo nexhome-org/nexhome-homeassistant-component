@@ -1,0 +1,10 @@
+{
+  "domain": "NEXHome",
+  "name": "NEXHome",
+  "codeowners": ["linzh"],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "",
+  "issue_tracker": "",
+  "version": "0.1.0"
+}

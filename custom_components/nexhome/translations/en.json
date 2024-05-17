@@ -1,0 +1,19 @@
+{
+    "config": {
+        "error": {
+            "require_ip": "IP require",
+            "err_ip": "Enter a valid IP address"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "ip_address": "IP(Example, 192.168.1.10:8085)",
+                    "sn": "SN(Example, 111002875D80509FC)"
+                },
+                "description": "Enter the IP address and SN of the central control (SN can be viewed through the construction APP or AIHome)",
+                "title": "NEXHome"
+            }
+        }
+    }
+}
+  

@@ -1,0 +1,19 @@
+{
+    "config": {
+        "error": {
+            "require_ip": "请输入IP地址",
+            "err_ip": "请输入合法的IP地址"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "ip_address": "IP地址（如192.168.1.10:8085）",
+                    "sn": "SN（如111002875D80509FC）"
+                },
+                "description": "请输入中控的IP地址和SN（SN可以通过施工APP或AIHome查看）",
+                "title": "NEXHome"
+            }
+        }
+    }
+}
+  
