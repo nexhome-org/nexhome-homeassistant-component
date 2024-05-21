@@ -1,4 +1,4 @@
-import json
+import asyncio
 import logging
 from datetime import timedelta
 import async_timeout
@@ -34,6 +34,13 @@ class NexhomeCoordinator(DataUpdateCoordinator):
         self._results = {}
 
     async def _async_update_data(self):
-        # return True
-        async with async_timeout.timeout(1000):
-            return await self._tool.getProperties(self.hass, self._params)
+        try:
+            async with async_timeout.timeout(20):  # 尝试在20秒内获取数据
+                data = await self._tool.getProperties(self.hass, self._params)
+                return data  # 成功获取数据则返回
+        except asyncio.TimeoutError:
+            _LOGGER.error("Timeout fetching NEXHome data")  # 超时捕获并记录错误信息
+            return False
+        except Exception as err:
+            _LOGGER.exception("An unexpected error occurred during data fetch: %s", err)
+            return False
