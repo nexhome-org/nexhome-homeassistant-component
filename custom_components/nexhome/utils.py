@@ -1,5 +1,4 @@
 from .const import DOMAIN
-from homeassistant.components.network import async_get_adapters
 
 def get_value_by_identifier(data_list, identifier):
     for item in data_list:
@@ -37,13 +36,3 @@ def format_upd_mes(received_data):
                 content.append(line)
 
     return content, headers
-
-async def get_network_info(hass):
-    address = ['192.168.10.1']
-    adapters = await async_get_adapters(hass)
-    print(adapters)
-    for adapter in adapters:
-        for ip_info in adapter["ipv4"]:
-            local_ip = ip_info["address"]
-            address.append(local_ip)
-    return address
