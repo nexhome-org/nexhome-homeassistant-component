@@ -1,5 +1,5 @@
 {
-  "domain": "NEXHome",
+  "domain": "nexhome",
   "name": "NEXHome",
   "codeowners": ["@linzh322"],
   "iot_class": "local_polling",
