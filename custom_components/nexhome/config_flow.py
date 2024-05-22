@@ -2,18 +2,18 @@ import voluptuous as vol
 from homeassistant import config_entries
 from .const import DOMAIN, SN_CONFIG, IP_CONFIG, DISCOVER
 from .nexhome_discover import discover, send_test_message
-from .utils import set_hass_obj, get_network_info
+from .utils import set_hass_obj
 
 
 def validate_ip_port(value):
     parts = value.split(":")
     if len(parts) != 2:
         raise vol.Invalid("err_ip")
-    
+
     ip_address, port = parts
     if not ip_address or not port:
         raise vol.Invalid("err_ip")
-    
+
     try:
         # 检查 IP 地址的有效性
         ip_parts = ip_address.split(".")
