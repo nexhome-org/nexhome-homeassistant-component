@@ -1,5 +1,5 @@
 {
-  "domain": "NEXHome",
+  "domain": "nexhome",
   "name": "NEXHome",
   "codeowners": ["@linzh322"],
   "config_flow": true,

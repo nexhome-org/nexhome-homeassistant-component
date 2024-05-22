@@ -4,7 +4,7 @@ from homeassistant.const import Platform
 IP = '192.168.10.1:8085'
 DEVICES = "devices"
 SCENES = "scene"
-DOMAIN = "NEXHome"
+DOMAIN = "nexhome"
 SN_CONFIG = 'sn_input'
 IP_CONFIG = "ip_address"
 DEVICE_DATA = "device_list"
@@ -43,8 +43,8 @@ CO2 = "CO2"
 LUX = "LUX"
 VOC = "VOC"
 Default_Device = {
-    'id': 'teshudechangjingmianban', 
-    'address': '680AE2FFFE33326D-2222222', 
+    'id': 'teshudechangjingmianban',
+    'address': '680AE2FFFE33326D-2222222',
     'name': '场景面板',
     'type': 'default',
 }
