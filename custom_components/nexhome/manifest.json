@@ -1,7 +1,8 @@
 {
   "domain": "NEXHome",
   "name": "NEXHome",
-  "codeowners": ["linzh"],
+  "codeowners": ["linzh322"],
+  "iot_class": "local_polling",
   "config_flow": true,
   "dependencies": [],
   "documentation": "https://github.com/nexhome-org/nexhome-homeassistant-component/blob/main/README.md",
