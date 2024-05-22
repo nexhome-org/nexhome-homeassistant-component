@@ -2,11 +2,11 @@
   "domain": "nexhome",
   "name": "NEXHome",
   "codeowners": ["@linzh322"],
-  "iot_class": "local_polling",
   "config_flow": true,
   "dependencies": [],
-  "loggers": ["NEXHome"],
   "documentation": "https://github.com/nexhome-org/nexhome-homeassistant-component/blob/main/README.md",
+  "iot_class": "local_polling",
   "issue_tracker": "https://github.com/nexhome-org/nexhome-homeassistant-component/issues",
+  "loggers": ["NEXHome"],
   "version": "0.1.0"
 }
