@@ -35,12 +35,12 @@ class NexhomeCoordinator(DataUpdateCoordinator):
 
     async def _async_update_data(self):
         try:
-            async with async_timeout.timeout(20):  # 尝试在20秒内获取数据
-                data = await self._tool.getProperties(self.hass, self._params)
-                return data  # 成功获取数据则返回
-        except asyncio.TimeoutError:
-            _LOGGER.error("Timeout fetching NEXHome data")  # 超时捕获并记录错误信息
-            return False
+            device_property = await self._tool.getProperties(self.hass, self._params)
+            if device_property:
+                return device_property
+            else:
+                _LOGGER.warning("无设备属性数据.")
+                return False
         except Exception as err:
-            _LOGGER.exception("An unexpected error occurred during data fetch: %s", err)
+            _LOGGER.error("An unhandled error occurred during data update: %s", err)
             return False

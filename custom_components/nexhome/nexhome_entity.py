@@ -1,7 +1,8 @@
 from homeassistant.helpers.entity import Entity
-from .const import DOMAIN
+from .const import DOMAIN, TIME_NUMBER
 from .nexhome_device import NEXHOME_DEVICE
 import logging
+import asyncio
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.core import callback
 _LOGGER = logging.getLogger(__name__)
@@ -61,25 +62,25 @@ class NexhomeEntity(CoordinatorEntity, Entity):
     def icon(self):
         return self._config.get("icon")
     
-    # async def async_added_to_hass(self):
-    #     await super().async_added_to_hass()
-    #     await self._update_state()
-    #     self.hass.async_create_task(self.async_poll_properties())
+    async def async_added_to_hass(self):
+        await super().async_added_to_hass()
+        await self._update_state()
+        self.hass.async_create_task(self.async_poll_properties())
     
-    # async def async_poll_properties(self):
-    #     await self._update_state()
+    async def async_poll_properties(self):
+        await self._update_state()
             
-    # async def _update_state(self):
-    #     """更新状态"""
-    #     address = self._device['address']
-    #     identifiers = self._config["identifiers"]
-    #     params = [{'identifier': item, 'address': address} for item in identifiers]
-    #     propertys = await self._tool.getProperties(self.hass, params)  # 调用获取属性值的方法
-    #     if propertys and len(propertys) > 0:
-    #         for property in propertys:
-    #             self._device[property.get('identifier')] = property.get('value', None)
-    #             self.schedule_update_ha_state()
-    
+    async def _update_state(self):
+        """更新状态"""
+        address = self._device['address']
+        identifiers = self._config["identifiers"]
+        params = [{'identifier': item, 'address': address} for item in identifiers]
+        propertys = await self._tool.getProperties(self.hass, params)  # 调用获取属性值的方法
+        if propertys and len(propertys) > 0:
+            for property in propertys:
+                self._device[property.get('identifier')] = property.get('value', None)
+                self.schedule_update_ha_state()
+
     @callback
     def _handle_coordinator_update(self) -> None:
         self._property = self.coordinator.data
