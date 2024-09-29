@@ -39,8 +39,6 @@ class NexhomeCoordinator(DataUpdateCoordinator):
             if device_property:
                 return device_property
             else:
-                _LOGGER.warning("无设备属性数据.")
                 return False
         except Exception as err:
-            _LOGGER.error("An unhandled error occurred during data update: %s", err)
             return False
