@@ -4,7 +4,7 @@
 
 简体中文 | [English](./README.md)
 
-通过本地局域网控制你的Nexhome智能设备
+通过本地局域网控制你的NEXhome智能设备
 
 - 通过Home Assistant UI完成设备的配置.
 - 生成额外的传感器和开关方便进行设备控制.

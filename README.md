@@ -4,7 +4,7 @@
 
 English | [简体中文](./README.zh-CN.md)
 
-Control your Nexhome smart devices through the local area network
+Control your NEXhome smart devices through the local area network
 
 - Complete device configuration through the Home Assistant UI.
 - Generate additional sensors and switches for easy device control.
