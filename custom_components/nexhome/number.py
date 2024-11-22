@@ -41,7 +41,7 @@ class NexhomeInputNumber(NexhomeEntity, NumberEntity):
         self._step_value = self._config.get("step")
 
     @property
-    def _attr_native_value(self):
+    def native_value(self):
         if self._device.get(Location) is not None:
             return self._device[Location]
         else:
