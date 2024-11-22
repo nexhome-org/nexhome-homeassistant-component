@@ -28,7 +28,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                         coordinator = NexhomeCoordinator(hass, Tool, params)
                         await coordinator.async_config_entry_first_refresh()
                         numbers.append(NexhomeInputNumber(device, entity_key, Tool, coordinator))
-        async_add_entities(numbers)    
+        async_add_entities(numbers)
 
 class NexhomeInputNumber(NexhomeEntity, NumberEntity):
 
@@ -39,7 +39,7 @@ class NexhomeInputNumber(NexhomeEntity, NumberEntity):
         self._max_value = self._config.get("max")
         self._min_value = self._config.get("min")
         self._step_value = self._config.get("step")
-    
+
     @property
     def _attr_native_value(self):
         if self._device.get(Location) is not None:
@@ -48,7 +48,7 @@ class NexhomeInputNumber(NexhomeEntity, NumberEntity):
             return 0
 
     def set_value(self, value):
-        _LOGGER.info("NEXHome 设置为 %s", value)
+        _LOGGER.info("NEXhome 设置为 %s", value)
         self._device[Location] = value
         data = {'identifier': 'Location', 'value': value}
         self._tool.device_control(data, self._device['address'])

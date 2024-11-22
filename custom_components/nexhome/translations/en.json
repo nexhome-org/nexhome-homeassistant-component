@@ -11,7 +11,7 @@
                     "sn": "IOTID(Example, 111002875D80509FC)"
                 },
                 "description": "Enter the IP address and IOTID of the central control (IOTID can be viewed through the construction APP or AIHome)",
-                "title": "NEXHome"
+                "title": "NEXhome"
             }
         }
     }

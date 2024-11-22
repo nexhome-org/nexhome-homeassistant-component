@@ -1,4 +1,4 @@
-# NEXHome
+# NEXhome
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/hacs/integration)
 [![Stable](https://img.shields.io/github/v/release/nexhome-org/nexhome-homeassistant-component)](https://github.com/nexhome-org/nexhome-homeassistant-component/releases/latest)
 
@@ -35,8 +35,8 @@
 1. 打开 Home Assistant 的 HACS 页面。
 2. 点击`集成`。
 3. 点击右下角的`浏览并添加存储库`。
-4. 在新打开的页面中找到`NEXHome`，安装即可。  
-   **注意**：如果您刚刚安装好 HACS，或者网络不通畅，您可能看不到`NEXHome`插件。  
+4. 在新打开的页面中找到`NEXhome`，安装即可。  
+   **注意**：如果您刚刚安装好 HACS，或者网络不通畅，您可能看不到`NEXhome`插件。  
    如果在 HACS 中找不到此插件，可以使用下面的手动安装方法。
 5. 重新启动 Home Assistant。
 
@@ -62,5 +62,5 @@
 logger:
   default: warn
   logs:
-    custom_components.NEXHome: debug
+    custom_components.NEXhome: debug
 ```

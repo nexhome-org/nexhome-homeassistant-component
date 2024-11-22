@@ -11,7 +11,7 @@
                     "sn": "IOTID（如111002875D80509FC）"
                 },
                 "description": "请输入中控的IP地址和IOTID（IOTID可以通过施工APP或AIHome查看）",
-                "title": "NEXHome"
+                "title": "NEXhome"
             }
         }
     }

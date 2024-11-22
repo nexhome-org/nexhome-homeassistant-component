@@ -1,4 +1,4 @@
-# NEXHome
+# NEXhome
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/hacs/integration)
 [![Stable](https://img.shields.io/github/v/release/nexhome-org/nexhome-homeassistant-component)](https://github.com/nexhome-org/nexhome-homeassistant-component/releases/latest)
 
@@ -35,8 +35,8 @@ Do not install using one method and then upgrade using another method, as this m
 1. Open Home Assistant's HACS page.
 2. Click `integrations`。
 3. Click on `ADD INTEGRATION ` in the bottom right corner.
-4. Find `NEXHome` in the newly opened page and install it.  
-   **Note**：If you have just installed HACS or the network is not smooth, you may not see the `NEXHome` plugin.
+4. Find `NEXhome` in the newly opened page and install it.  
+   **Note**：If you have just installed HACS or the network is not smooth, you may not see the `NEXhome` plugin.
 If you can't find this plugin in HACS, you can use the manual installation method below.
 5. Restart Home Assistant.
 
@@ -62,5 +62,5 @@ To turn on debug log output, configure as follows in configuration.yaml
 logger:
   default: warn
   logs:
-    custom_components.NEXHome: debug
+    custom_components.NEXhome: debug
 ```
