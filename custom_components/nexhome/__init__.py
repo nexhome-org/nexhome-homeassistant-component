@@ -13,13 +13,13 @@ async def async_setup_entry(hass, entry):
     for platform in ALL_PLATFORM:
         await hass.async_create_task(hass.config_entries.async_forward_entry_setup(
             entry, platform))
-        
+
     # discoverObj = hass.data[DOMAIN].get(DISCOVER)
     # if discoverObj is None:
     #     discoverObj = await discover(hass)
     # else:
     #     await discoverObj.start()
-    
+
     return True
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
@@ -34,6 +34,7 @@ async def register_device_list_service(hass, entry):
     SN = entry.data.get(SN_CONFIG)
     IP = entry.data.get(IP_CONFIG)
     tool = ServiceTool(IP, SN)
+    await tool.login(hass)
     deviceList = await tool.getDevice(hass)
     # deviceList = [Default_Device] + deviceList
     device_value = [

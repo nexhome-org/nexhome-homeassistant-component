@@ -38,6 +38,27 @@ class ServiceTool():
         except Exception as exception:
             _LOGGER.error("SmartGatewayNativeAuthorizer error", exc_info=exception)
 
+
+    def loginApi(self):
+        try:
+            Headers = self.getHeader()
+            url = f"http://{self.ip_address}/smarthome/login"
+            data = {
+                'ip': '127.0.0.1'
+            }
+            return requests.post(url, headers=Headers, json=data)
+        except requests.exceptions.RequestException as e:
+            _LOGGER.error('请求失败:', e)
+            return False
+    # 登录
+    async def login(self, hass):
+        try:
+            response = await hass.async_add_executor_job(self.loginApi)
+            return response
+        except requests.exceptions.RequestException as e:
+            _LOGGER.error('请求失败:', e)
+            return False
+
     # 获取场景列表
     def sceneList(self):
         Headers = self.getHeader()
@@ -55,10 +76,14 @@ class ServiceTool():
 
     # 获取设备列表
     def deviceList(self):
-        Headers = self.getHeader()
-        print(Headers)
-        url = f"http://{self.ip_address}/smarthome/devices"
-        return requests.get(url, headers=Headers)
+        try:
+            Headers = self.getHeader()
+            print(Headers)
+            url = f"http://{self.ip_address}/smarthome/devices"
+            return requests.get(url, headers=Headers)
+        except Exception as e:
+            print('请求失败:', e)
+            return False  # 返回默认值
 
     # 设备控制
     def device_control(self, data, address):
@@ -82,6 +107,7 @@ class ServiceTool():
     async def getDevice(self, hass):
         try:
             response = await hass.async_add_executor_job(self.deviceList)
+            print(response.json())
             return response.json()['result']['elements']
         except requests.exceptions.RequestException as e:
             print('请求失败:', e)
@@ -98,6 +124,7 @@ class ServiceTool():
     async def getProperties(self, hass, params):
         try:
             response = await hass.async_add_executor_job(self.devicePost, params)
+            # print(response.json())
             response.raise_for_status()  # 检查请求是否成功
             device_property = response.json()['result']['deviceProperty']
             if device_property and len(device_property) > 0:

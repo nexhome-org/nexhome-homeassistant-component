@@ -2,7 +2,7 @@ import logging
 from .nexhome_entity import NexhomeEntity
 from .nexhome_device import NEXHOME_DEVICE
 from .header import ServiceTool
-from .const import DEVICES, DOMAIN, PowerSwitch, Brightness, IP_CONFIG, SN_CONFIG
+from .const import DEVICES, DOMAIN, PowerSwitch, Brightness, ColorTem, IP_CONFIG, SN_CONFIG
 from homeassistant.components.light import *
 from homeassistant.const import Platform
 from .nexhome_coordinator import NexhomeCoordinator
@@ -31,7 +31,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                         coordinator = NexhomeCoordinator(hass, Tool, params)
                         await coordinator.async_config_entry_first_refresh()
                         lights.append(NexhomeLight(device, entity_key, Tool, coordinator))
-        async_add_entities(lights)    
+        async_add_entities(lights)
 
 
 class NexhomeLight(NexhomeEntity, LightEntity):
@@ -53,26 +53,41 @@ class NexhomeLight(NexhomeEntity, LightEntity):
         else:
             return None
 
-    # @property
-    # def color_temp(self):
-    #     return round(1000000 / self.color_temp_kelvin)
+    @property
+    def color_temp(self):
+        return round(1000000 / self.color_temp_kelvin)
 
-    # @property
-    # def color_temp_kelvin(self):
-    #     return self._device.get_attribute(X13Attributes.color_temperature)
+    @property
+    def color_temp_kelvin(self):
+        if self._device.get(ColorTem) is not None:
+            return int(self._device.get(ColorTem))
+        else:
+            return 2700
 
-    # @property
-    # def min_color_temp_kelvin(self) -> int:
-    #     return self._device.color_temp_range[0]
+    @property
+    def min_mireds(self) -> int:
+        return round(1000000 / self.max_color_temp_kelvin)
 
-    # @property
-    # def max_color_temp_kelvin(self) -> int:
-    #     return self._device.color_temp_range[1]
-    
+    @property
+    def max_mireds(self) -> int:
+        return round(1000000 / self.min_color_temp_kelvin)
+
+    @property
+    def min_color_temp_kelvin(self) -> int:
+        return 2000
+
+    @property
+    def max_color_temp_kelvin(self) -> int:
+        return 6500
+
 
     @property
     def supported_features(self) -> LightEntityFeature:
-        return SUPPORT_BRIGHTNESS
+        supported_features = SUPPORT_BRIGHTNESS
+        device_key = self._device.get("device_type_id")
+        if device_key == '51':
+            supported_features |= SUPPORT_COLOR_TEMP
+        return supported_features
 
     def turn_on(self, **kwargs: Any):
         if not self.is_on:
@@ -82,8 +97,21 @@ class NexhomeLight(NexhomeEntity, LightEntity):
             value = kwargs.get(key)
             if key == ATTR_BRIGHTNESS:
                 data = {'identifier': Brightness, 'value': value}
-                self._tool.device_control(data, self._device['address'])
-                
+                ss = self._tool.device_control(data, self._device['address'])
+                print(Brightness, data, ss.json())
+            if key == ATTR_COLOR_TEMP:
+                # 限制 mireds 值在设备支持的范围内
+                min_mireds = self.min_mireds
+                max_mireds = self.max_mireds
+                value = max(min(value, max_mireds), min_mireds)
+
+                # 转换为 Kelvin 并下发
+                kelvin_value = round(1000000 / value)
+                data = {'identifier': ColorTem, 'value': kelvin_value}
+                dd = self._tool.device_control(data, self._device['address'])
+                print(ColorTem, data, dd.json(), round(1000000 / value))
+
+
 
     def turn_off(self):
         data = {'identifier': PowerSwitch, 'value': '0'}
@@ -93,7 +121,7 @@ class NexhomeLight(NexhomeEntity, LightEntity):
     #     await super().async_added_to_hass()
     #     await self._update_state()
     #     self.hass.async_create_task(self.async_poll_properties())
-    
+
     # async def async_poll_properties(self):
     #     while True:
     #         await asyncio.sleep(TIME_NUMBER)

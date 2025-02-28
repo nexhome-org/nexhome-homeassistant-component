@@ -9,7 +9,7 @@ from homeassistant.const import (
 from homeassistant.components.sensor import SensorStateClass, SensorDeviceClass
 from .const import (
     FAN_MODEL_MAP, PowerSwitch, TemperatureSet, Temperature, Windspeed, WorkMode, Location, Brightness,
-    Humidity, PM25, HCHO, VOC, CO2, LUX
+    Humidity, ColorTem, PM25, HCHO, VOC, CO2, LUX
 )
 NEXHOME_DEVICE = {
     "default": {
@@ -52,6 +52,17 @@ NEXHOME_DEVICE = {
                 "type": Platform.LIGHT,
                 "icon": "mdi:lightbulb",
                 "identifiers": [Brightness, PowerSwitch]
+            }
+        }
+    },
+    "51": {
+        "name": "色温灯",
+        "entities": {
+            "51_light": {
+                "name": '色温灯',
+                "type": Platform.LIGHT,
+                "icon": "mdi:lightbulb",
+                "identifiers": [Brightness, PowerSwitch, ColorTem]
             }
         }
     },
@@ -186,6 +197,28 @@ NEXHOME_DEVICE = {
                 "unit": CONCENTRATION_PARTS_PER_MILLION,
                 "state_class": SensorStateClass.MEASUREMENT
             },
+        }
+    },
+    "132": {
+        "name": "雾化",
+        "entities": {
+            "132_switch": {
+                "name": '开关',
+                "type": Platform.SWITCH,
+                "icon": "mdi:power",
+                "identifiers": [PowerSwitch]
+            }
+        }
+    },
+    "133": {
+        "name": "排风扇",
+        "entities": {
+            "133_fan": {
+                "name": '开关',
+                "type": Platform.FAN,
+                "icon": "mdi:fan",
+                "identifiers": [PowerSwitch, Windspeed]
+            }
         }
     },
 }
