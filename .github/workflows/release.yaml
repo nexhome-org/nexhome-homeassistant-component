@@ -24,4 +24,4 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: "nexhome.zip"
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.PAT_TOKEN }}
