@@ -1,6 +1,5 @@
 name: Create Custom Release
 
-# 触发条件：仅当创建 Release 时触发
 on:
   release:
     types: [created]
@@ -14,14 +13,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Step 2: 打包项目为 nexhome.zip
+      # Step 2: 安装 GitHub CLI
+      - name: Install GitHub CLI
+        run: sudo snap install gh --classic
+
+      # Step 3: 打包项目为 nexhome.zip
       - name: Create nexhome.zip
         run: |
           zip -r nexhome.zip .
 
-      # Step 3: 上传 nexhome.zip 到 Release
+      # Step 4: 使用 GitHub CLI 上传资产
       - name: Upload release asset
-        uses: softprops/action-gh-release@v2
-        with:
-          files: "nexhome.zip"
-          token: ${{ secrets.PAT_TOKEN }}
+        run: |
+          gh release upload ${{ github.event.release.tag_name }} nexhome.zip --clobber
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
