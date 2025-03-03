@@ -1,0 +1,28 @@
+name: Create Custom Release
+
+# 触发条件：仅当创建 Release 时触发
+on:
+  release:
+    types: [created]
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: 检出代码
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: 打包项目为 nexhome.zip
+      - name: Create nexhome.zip
+        run: |
+          zip -r nexhome.zip .
+
+      # Step 3: 上传 nexhome.zip 到 Release
+      - name: Upload release asset
+        uses: softprops/action-gh-release@v1
+        with:
+          files: "nexhome.zip"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
