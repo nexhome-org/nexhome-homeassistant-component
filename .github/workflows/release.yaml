@@ -21,7 +21,7 @@ jobs:
 
       # Step 3: 上传 nexhome.zip 到 Release
       - name: Upload release asset
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: "nexhome.zip"
         env:
