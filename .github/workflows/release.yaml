@@ -16,8 +16,10 @@ jobs:
 
       # Step 2: 打包项目为 nexhome.zip
       - name: Create nexhome.zip
+        shell: "bash"
         run: |
-          zip -r nexhome.zip .
+          cd "${{ github.workspace }}/custom_components/nexhome"
+          zip nexhome.zip -r ./
 
       # Step 3: 上传 nexhome.zip 到 Release
       - name: Upload release asset
