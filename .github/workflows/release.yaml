@@ -1,9 +1,13 @@
 name: Create Custom Release
 
-# 触发条件：仅当创建 Release 时触发
+## 触发条件：仅当创建 Release 时触发
+#on:
+#  release:
+#    types: [created]
 on:
-  release:
-    types: [created]
+  push:
+    tags:
+      - "v*"
 
 jobs:
   create-release:
@@ -13,6 +17,19 @@ jobs:
       # Step 1: 检出代码
       - name: Checkout code
         uses: actions/checkout@v3
+
+      # Step 2: 检查目标目录是否存在
+      - name: Check if directory exists
+        run: |
+          if [ ! -d "${{ github.workspace }}/custom_components/nexhome" ]; then
+            echo "Directory does not exist!"
+            exit 1
+          fi
+
+      # Step 3: 打印目标目录内容
+      - name: List directory contents
+        run: |
+          ls -la "${{ github.workspace }}/custom_components/nexhome"
 
       # Step 2: 打包项目为 nexhome.zip
       - name: Create nexhome.zip
