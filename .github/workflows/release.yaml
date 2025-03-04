@@ -31,16 +31,16 @@ jobs:
         run: |
           ls -la "${{ github.workspace }}/custom_components/nexhome"
 
-      # Step 2: 打包项目为 nexhome.zip
+      # Step 4: 打包项目为 nexhome.zip
       - name: Create nexhome.zip
         shell: "bash"
         run: |
           cd "${{ github.workspace }}/custom_components/nexhome"
           zip nexhome.zip -r ./
 
-      # Step 3: 上传 nexhome.zip 到 Release
+      # Step 5: 上传 nexhome.zip 到 Release
       - name: Upload release asset
         uses: softprops/action-gh-release@v2
         with:
-          files: "nexhome.zip"
+          files: ${{ github.workspace }}/custom_components/nexhome/nexhome.zip
           token: ${{ secrets.PAT_TOKEN }}
