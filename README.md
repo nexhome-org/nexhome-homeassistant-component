@@ -2,7 +2,7 @@
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/hacs/integration)
 [![Stable](https://img.shields.io/github/v/release/nexhome-org/nexhome-homeassistant-component)](https://github.com/nexhome-org/nexhome-homeassistant-component/releases/latest)
 
-English | [简体中文](./README.zh-CN.md)
+English | [简体中文](https://github.com/nexhome-org/nexhome-homeassistant-component/blob/main/README.zh-CN.md)
 
 Control your NEXhome smart devices through the local area network
 

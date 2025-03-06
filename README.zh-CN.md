@@ -2,7 +2,7 @@
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/hacs/integration)
 [![Stable](https://img.shields.io/github/v/release/nexhome-org/nexhome-homeassistant-component)](https://github.com/nexhome-org/nexhome-homeassistant-component/releases/latest)
 
-简体中文 | [English](./README.md)
+简体中文 | [English](https://github.com/nexhome-org/nexhome-homeassistant-component/blob/main/README.md)
 
 通过本地局域网控制你的NEXhome智能设备
 
