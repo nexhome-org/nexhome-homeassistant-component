@@ -2,7 +2,7 @@ from homeassistant.const import (
     Platform,
     CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
     CONCENTRATION_PARTS_PER_MILLION,
-    TEMP_CELSIUS,
+    UnitOfTemperature,
     PERCENTAGE,
     LIGHT_LUX
 )
@@ -103,7 +103,7 @@ NEXHOME_DEVICE = {
                 "type": Platform.SENSOR,
                 "name": "温度",
                 "device_class": SensorDeviceClass.TEMPERATURE,
-                "unit": TEMP_CELSIUS,
+                "unit": UnitOfTemperature.CELSIUS,
                 "state_class": SensorStateClass.MEASUREMENT,
                 "identifiers": [Temperature]
             },
@@ -154,7 +154,7 @@ NEXHOME_DEVICE = {
                 "identifiers": [Temperature],
                 "name": "温度",
                 "device_class": SensorDeviceClass.TEMPERATURE,
-                "unit": TEMP_CELSIUS,
+                "unit": UnitOfTemperature.CELSIUS,
                 "state_class": SensorStateClass.MEASUREMENT
             },
             "12_pm25": {
