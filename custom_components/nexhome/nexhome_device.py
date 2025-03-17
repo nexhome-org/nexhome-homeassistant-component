@@ -112,18 +112,11 @@ NEXHOME_DEVICE = {
     "10": {
         "name": "新风",
         "entities": {
-            "10_select": {
-                "name": "风速",
-                "type": Platform.SELECT,
-                "options": FAN_MODEL_MAP,
-                "identifiers": [Windspeed],
-                "icon": "mdi:fan"
-            },
             "10_fan": {
                 "name": "开关",
                 "type": Platform.FAN,
-                "identifiers": [PowerSwitch],
-                "icon": "mdi:power"
+                "icon": "mdi:fan",
+                "identifiers": [PowerSwitch, Windspeed]
             }
         }
     },
