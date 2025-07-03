@@ -10,9 +10,10 @@ from .utils import set_hass_obj
 async def async_setup_entry(hass, entry):
     # global discoverObj
     await register_device_list_service(hass, entry)
-    for platform in ALL_PLATFORM:
-        await hass.async_create_task(hass.config_entries.async_forward_entry_setup(
-            entry, platform))
+    await hass.config_entries.async_forward_entry_setups(entry, ALL_PLATFORM)
+    # for platform in ALL_PLATFORM:
+    #     await hass.async_create_task(hass.config_entries.async_forward_entry_setup(
+    #         entry, platform))
 
     # discoverObj = hass.data[DOMAIN].get(DISCOVER)
     # if discoverObj is None:
