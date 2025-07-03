@@ -15,18 +15,19 @@ Control your NEXhome smart devices through the local area network
 ## Supported devices
 
 | Device Model | Name                            |
-|------|---------------------------------|
-| 1    | Light                           | 
-| 2    | Dimming light                   | 
-| 3    | Air conditioner                 |
-| 5    | Temperature and humidity sensor |
-| 6    | Curtain                         | 
-| 10   | Fresh air                       | 
-| 11   | Floor heating                   | 
-| 12   | Air detector                    |
-| 51   | Color temperature light         |
-| 132  | Atomized glass                  |
-| 133  | Exhaust fan                     |
+|--------------|---------------------------------|
+| 1            | Light                           | 
+| 2            | Dimming light                   | 
+| 3            | Air conditioner                 |
+| 5            | Temperature and humidity sensor |
+| 6            | Curtain                         | 
+| 10           | Fresh air                       | 
+| 11           | Floor heating                   | 
+| 12           | Air detector                    |
+| 51           | Color temperature light         |
+| 107          | Air conditioner（mode floor heating）         |
+| 132          | Atomized glass                  |
+| 133          | Exhaust fan                     |
 ## Install or Upgrade
 
 Choose one of the following two installation/upgrade methods.

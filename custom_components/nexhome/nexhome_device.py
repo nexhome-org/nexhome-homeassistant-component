@@ -88,6 +88,17 @@ NEXHOME_DEVICE = {
             },
         }
     },
+    "107": {
+        "name": "空调（模式+地暖）",
+        "entities": {
+            "107_climate": {
+                "name": "空调（模式+地暖）",
+                "type": Platform.CLIMATE,
+                "icon": "mdi:air-conditioner",
+                "identifiers": [PowerSwitch, Windspeed, WorkMode, Temperature, TemperatureSet]
+            },
+        }
+    },
     "5": {
         "name": "温湿度传感器",
         "entities": {
