@@ -10,6 +10,7 @@ from .const import (
     IP_CONFIG,
     SN_CONFIG
 )
+from homeassistant.config_entries import ConfigEntryState
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
@@ -28,9 +29,11 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                         identifiers = config["identifiers"]
                         params = [{'identifier': item, 'address': device_address} for item in identifiers]
                         coordinator = NexhomeCoordinator(hass, Tool, params)
-                        await coordinator.async_config_entry_first_refresh()
+                        # 只在setup阶段调用首次刷新
+                        if config_entry.state == ConfigEntryState.SETUP_IN_PROGRESS:
+                            await coordinator.async_config_entry_first_refresh()
                         sensors.append(NexhomeSensor(device, entity_key, Tool, coordinator))
-        async_add_entities(sensors)    
+        async_add_entities(sensors)
 
 
 class NexhomeSensor(NexhomeEntity, SensorEntity):

@@ -6,6 +6,7 @@ from .header import ServiceTool
 from .nexhome_device import NEXHOME_DEVICE
 from .nexhome_coordinator import NexhomeCoordinator
 from homeassistant.const import Platform
+from homeassistant.config_entries import ConfigEntryState
 _LOGGER = logging.getLogger(__name__)
 StateMap = {
     '0': False,
@@ -28,7 +29,8 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                         identifiers = config["identifiers"]
                         params = [{'identifier': item, 'address': device_address} for item in identifiers]
                         coordinator = NexhomeCoordinator(hass, Tool, params)
-                        await coordinator.async_config_entry_first_refresh()
+                        if config_entry.state == ConfigEntryState.SETUP_IN_PROGRESS:
+                            await coordinator.async_config_entry_first_refresh()
                         switches.append(NexhomeSwitch(device, entity_key, Tool, coordinator))
         async_add_entities(switches, update_before_add=True)
 

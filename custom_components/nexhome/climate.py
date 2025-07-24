@@ -11,6 +11,8 @@ from homeassistant.const import (
     UnitOfTemperature,
     ATTR_TEMPERATURE,
 )
+from homeassistant.config_entries import ConfigEntryState
+
 _LOGGER = logging.getLogger(__name__)
 
 TEMPERATURE_MAX = 30
@@ -63,7 +65,8 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                         identifiers = config["identifiers"]
                         params = [{'identifier': item, 'address': device_address} for item in identifiers]
                         coordinator = NexhomeCoordinator(hass, Tool, params)
-                        await coordinator.async_config_entry_first_refresh()
+                        if config_entry.state == ConfigEntryState.SETUP_IN_PROGRESS:
+                            await coordinator.async_config_entry_first_refresh()
                         if device_key == '3':
                             climates.append(NexhomeClimateTypeThree(device, entity_key, Tool, coordinator))
                         elif device_key == '11':

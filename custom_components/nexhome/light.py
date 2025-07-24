@@ -6,6 +6,8 @@ from .const import DEVICES, DOMAIN, PowerSwitch, Brightness, ColorTem, IP_CONFIG
 from homeassistant.components.light import *
 from homeassistant.const import Platform
 from .nexhome_coordinator import NexhomeCoordinator
+from homeassistant.config_entries import ConfigEntryState
+
 from .const import (
     DOMAIN,
     DEVICES
@@ -29,7 +31,8 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                         identifiers = config["identifiers"]
                         params = [{'identifier': item, 'address': device_address} for item in identifiers]
                         coordinator = NexhomeCoordinator(hass, Tool, params)
-                        await coordinator.async_config_entry_first_refresh()
+                        if config_entry.state == ConfigEntryState.SETUP_IN_PROGRESS:
+                            await coordinator.async_config_entry_first_refresh()
                         lights.append(NexhomeLight(device, entity_key, Tool, coordinator))
         async_add_entities(lights)
 

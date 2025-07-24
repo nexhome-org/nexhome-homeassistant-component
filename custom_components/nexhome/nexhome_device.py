@@ -9,7 +9,7 @@ from homeassistant.const import (
 from homeassistant.components.sensor import SensorStateClass, SensorDeviceClass
 from .const import (
     FAN_MODEL_MAP, PowerSwitch, TemperatureSet, Temperature, Windspeed, WorkMode, Location, Brightness,
-    Humidity, ColorTem, PM25, HCHO, VOC, CO2, LUX
+    Humidity, ColorTem, PM25, HCHO, VOC, CO2, LUX, Open, Close, Stop
 )
 NEXHOME_DEVICE = {
     "default": {
@@ -44,6 +44,28 @@ NEXHOME_DEVICE = {
             },
         }
     },
+    "108": {
+       "name": "窗帘（开关停）",
+       "entities": {
+           "108_curtain": {
+               "name": '窗帘（开关停）',
+               "type": Platform.COVER,
+               "icon": "mdi:curtains",
+               "identifiers": [Open, Close, Stop],
+           },
+       }
+   },
+   "30": {
+       "name": "窗帘（开关）",
+       "entities": {
+           "30_curtain": {
+               "name": '窗帘（开关）',
+               "type": Platform.COVER,
+               "icon": "mdi:curtains",
+               "identifiers": [Open, Close],
+           },
+       }
+   },
     "2": {
         "name": "调光灯",
         "entities": {

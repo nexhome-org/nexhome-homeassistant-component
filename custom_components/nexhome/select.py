@@ -8,6 +8,7 @@ from .nexhome_device import NEXHOME_DEVICE
 from .nexhome_coordinator import NexhomeCoordinator
 from .utils import get_key_from_value
 from homeassistant.const import Platform
+from homeassistant.config_entries import ConfigEntryState
 _LOGGER = logging.getLogger(__name__)
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
@@ -26,7 +27,8 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                         identifiers = config["identifiers"]
                         params = [{'identifier': item, 'address': device_address} for item in identifiers]
                         coordinator = NexhomeCoordinator(hass, Tool, params)
-                        await coordinator.async_config_entry_first_refresh()
+                        if config_entry.state == ConfigEntryState.SETUP_IN_PROGRESS:
+                            await coordinator.async_config_entry_first_refresh()
                         if device_key == 'default':
                             selects.append(NexhomeSceneSelect(device, entity_key, Tool, coordinator))
                         else:
