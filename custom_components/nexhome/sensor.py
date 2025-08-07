@@ -29,10 +29,23 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                         identifiers = config["identifiers"]
                         params = [{'identifier': item, 'address': device_address} for item in identifiers]
                         coordinator = NexhomeCoordinator(hass, Tool, params)
-                        # 只在setup阶段调用首次刷新
                         if config_entry.state == ConfigEntryState.SETUP_IN_PROGRESS:
                             await coordinator.async_config_entry_first_refresh()
-                        sensors.append(NexhomeSensor(device, entity_key, Tool, coordinator))
+                        device_class_map = {
+                            '8': NexhomeSensor,
+                            '12': NexhomeSensor,
+                            '13': NexhomeSensor,
+                            '14': NexhomeSensor,
+                            '15': NexhomeSensor,
+                            '59': NexhomeSensor,
+                            '60': NexhomeSensor,
+                            '61': NexhomeSensor,
+                            '62': NexhomeSensor,
+                            '110': NexhomeSensor,
+                        }
+                        if device_key in device_class_map:
+                            sensor_class = device_class_map[device_key]
+                            sensors.append(sensor_class(device, entity_key, Tool, coordinator))
         async_add_entities(sensors)
 
 

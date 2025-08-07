@@ -3,7 +3,7 @@ from homeassistant.components.fan import FanEntityFeature  # Add this import
 from homeassistant.const import Platform
 from .utils import get_value_by_identifier
 import asyncio
-from .const import TIME_NUMBER, DEVICES, DOMAIN, PowerSwitch, IP_CONFIG, SN_CONFIG, Windspeed, FAN_MODEL_MAP
+from .const import TIME_NUMBER, DEVICES, DOMAIN, PowerSwitch, IP_CONFIG, SN_CONFIG, Windspeed
 from .nexhome_entity import NexhomeEntity
 from .header import ServiceTool
 from .nexhome_device import NEXHOME_DEVICE
@@ -13,7 +13,16 @@ from homeassistant.config_entries import ConfigEntryState
 import logging
 _LOGGER = logging.getLogger(__name__)
 
-
+FAN_MODEL_10 = {
+    "0": "自动",
+    "1": "低速",
+    "2": "中速",
+    "3": "高速",
+}
+FAN_MODEL_29 = {
+    "1": "低速",
+    "3": "高速",
+}
 async def async_setup_entry(hass, config_entry, async_add_entities):
     IP = config_entry.data.get(IP_CONFIG)
     SN = config_entry.data.get(SN_CONFIG)
@@ -32,10 +41,16 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                         coordinator = NexhomeCoordinator(hass, Tool, params)
                         if config_entry.state == ConfigEntryState.SETUP_IN_PROGRESS:
                             await coordinator.async_config_entry_first_refresh()
-                        if device_key == '10':
-                            fans.append(NexhomeFan10(device, entity_key, Tool, coordinator))
-                        elif device_key == '133':
-                            fans.append(NexhomeFan133(device, entity_key, Tool, coordinator))
+                        
+                        device_class_map = {
+                            '10': NexhomeFan10,
+                            '29': NexhomeFan29,
+                            '75': NexhomeFan,
+                            '133': NexhomeFan133,
+                        }
+                        if device_key in device_class_map:
+                            fan_class = device_class_map[device_key]
+                            fans.append(fan_class(device, entity_key, Tool, coordinator))
         async_add_entities(fans)
 
 
@@ -70,7 +85,7 @@ class NexhomeFan10(NexhomeFan):
     def __init__(self, device, entity_key, tool, coordinator):
         super().__init__(device, entity_key, tool, coordinator)
         self._attr_supported_features = FanEntityFeature.PRESET_MODE | FanEntityFeature.TURN_ON | FanEntityFeature.TURN_OFF
-        self._attr_preset_modes = list(FAN_MODEL_MAP.values())
+        self._attr_preset_modes = list(FAN_MODEL_10.values())
         self._attr_preset_mode = None  # 当前模式
 
     def turn_on(
@@ -88,13 +103,50 @@ class NexhomeFan10(NexhomeFan):
     @property
     def preset_mode(self) -> str | None:
         speed_value = self._device.get(Windspeed)
-        if speed_value in FAN_MODEL_MAP:
-            return FAN_MODEL_MAP[speed_value]
+        if speed_value in FAN_MODEL_10:
+            return FAN_MODEL_10[speed_value]
         return None
 
     def set_preset_mode(self, preset_mode: str) -> None:
         # 创建模式到值的反向映射
-        reverse_map = {v: k for k, v in FAN_MODEL_MAP.items()}
+        reverse_map = {v: k for k, v in FAN_MODEL_10.items()}
+
+        if preset_mode not in reverse_map:
+            return
+
+        data = {'identifier': Windspeed, 'value': reverse_map[preset_mode]}
+        ss = self._tool.device_control(data, self._device['address'])
+        print("Set Speed:", data, ss.json())
+
+class NexhomeFan29(NexhomeFan):
+    def __init__(self, device, entity_key, tool, coordinator):
+        super().__init__(device, entity_key, tool, coordinator)
+        self._attr_supported_features = FanEntityFeature.PRESET_MODE | FanEntityFeature.TURN_ON | FanEntityFeature.TURN_OFF
+        self._attr_preset_modes = list(FAN_MODEL_29.values())
+        self._attr_preset_mode = None  # 当前模式
+
+    def turn_on(
+        self,
+        percentage: int | None = None,
+        preset_mode: str | None = None,
+        **kwargs: Any,
+    ) -> None:
+        data = {'identifier': PowerSwitch, 'value': '1'}
+        self._tool.device_control(data, self._device['address'])
+
+        if preset_mode is not None:
+            self.set_preset_mode(preset_mode)
+
+    @property
+    def preset_mode(self) -> str | None:
+        speed_value = self._device.get(Windspeed)
+        if speed_value in FAN_MODEL_29:
+            return FAN_MODEL_29[speed_value]
+        return None
+
+    def set_preset_mode(self, preset_mode: str) -> None:
+        # 创建模式到值的反向映射
+        reverse_map = {v: k for k, v in FAN_MODEL_29.items()}
 
         if preset_mode not in reverse_map:
             return

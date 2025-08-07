@@ -1,6 +1,6 @@
 import logging
 from homeassistant.components.climate import *
-from .const import DEVICES, DOMAIN, FAN_MODEL_MAP, PowerSwitch, TemperatureSet, Temperature, WorkMode, Windspeed, IP_CONFIG, SN_CONFIG
+from .const import DEVICES, DOMAIN, FAN_MODEL_MAP, PowerSwitch, TemperatureSet, Temperature, WorkMode, Windspeed, IP_CONFIG, SN_CONFIG, WindDirection
 from .nexhome_entity import NexhomeEntity
 from .header import ServiceTool
 from .nexhome_device import NEXHOME_DEVICE
@@ -43,11 +43,30 @@ CUSTOM_MODE_NAME_107 = {
     "11": "地暖",
     "12": "制热+地暖",
 }
+FAN_MODEL_100 = {
+    "0": "自动",
+    "1": "低速",
+    "3": "高速",
+}
+FAN_MODEL_101 = {
+    "0": "自动",
+    "1": "低速",
+    "2": "中速",
+    "3": "高速",
+    "4": "超静",
+    "5": "超强",
+}
 FAN_MODEL_107 = {
     "0": "自动",
     "1": "低速",
     "2": "中速",
     "3": "高速",
+}
+WIND_DIRECTION_MAP = {
+    "10": "摆动",
+    "11": "上",
+    "12": "中",
+    "13": "下",
 }
 async def async_setup_entry(hass, config_entry, async_add_entities):
     IP = config_entry.data.get(IP_CONFIG)
@@ -65,14 +84,23 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                         identifiers = config["identifiers"]
                         params = [{'identifier': item, 'address': device_address} for item in identifiers]
                         coordinator = NexhomeCoordinator(hass, Tool, params)
-                        if config_entry.state == ConfigEntryState.SETUP_IN_PROGRESS:
-                            await coordinator.async_config_entry_first_refresh()
-                        if device_key == '3':
-                            climates.append(NexhomeClimateTypeThree(device, entity_key, Tool, coordinator))
-                        elif device_key == '11':
-                            climates.append(NexhomeBasicClimate(device, entity_key, Tool, coordinator))
-                        elif device_key == '107':
-                            climates.append(NexhomeClimateType107(device, entity_key, Tool, coordinator))
+                        await coordinator.async_config_entry_first_refresh()
+                        
+                        # 设备类型到实体类的映射
+                        device_class_map = {
+                            '3': NexhomeClimateTypeThree,
+                            '11': NexhomeBasicClimate,
+                            '35': NexhomeBasicClimate,
+                            '73': NexhomeClimateType73,
+                            '100': NexhomeClimateType100,
+                            '101': NexhomeClimateType101,
+                            '102': NexhomeClimateTypeThree,
+                            '107': NexhomeClimateType107,
+                        }
+                        
+                        if device_key in device_class_map:
+                            climate_class = device_class_map[device_key]
+                            climates.append(climate_class(device, entity_key, Tool, coordinator))
         async_add_entities(climates, update_before_add=True)
 
 
@@ -222,6 +250,117 @@ class NexhomeClimateTypeThree(NexhomeBasicClimate):
             self._tool.device_control(data, self._device['address'])
 
 
+class NexhomeClimateType100(NexhomeBasicClimate):
+    def __init__(self, device, entity_key, tool, coordinator):
+        super().__init__(device, entity_key, tool, coordinator)
+        self._modes = list(MODEL_MAP.values()) + [HVACMode.OFF]
+        self._fan_speeds = list(FAN_MODEL_100.values())
+
+    @property
+    def supported_features(self):
+        return ClimateEntityFeature.TARGET_TEMPERATURE | ClimateEntityFeature.FAN_MODE
+
+    @property
+    def hvac_mode(self) -> str:
+        if self._device.get(PowerSwitch) is not None:
+            power_switch = self._device.get(PowerSwitch)
+            if power_switch == '0':
+                mode = HVACMode.OFF
+            else:
+                mode = self._device.get(WorkMode)
+            return MODEL_MAP.get(mode, HVACMode.OFF)
+        else:
+            return HVACMode.OFF
+
+    @property
+    def fan_modes(self):
+        return self._fan_speeds
+
+    @property
+    def fan_mode(self):
+        if self._device.get(Windspeed) is not None:
+            value = self._device.get(Windspeed)
+            return FAN_MODEL_100.get(value, FAN_MODEL_100["0"])
+        else:
+            return FAN_MODEL_100["0"]
+
+    # 设置模式
+    def set_hvac_mode(self, hvac_mode: str) -> None:
+        hvac_mode = hvac_mode.lower()
+        if hvac_mode == HVACMode.OFF:
+            self.turn_off()
+        else:
+            # power_switch = get_value_by_identifier(self._property, 'PowerSwitch')
+            power_switch = self._device.get(PowerSwitch)
+            # 防止重复开启
+            if power_switch == '0':
+                self.turn_on()
+            value = get_key_from_value(MODEL_MAP, hvac_mode)
+            data = {'identifier': 'WorkMode', 'value': value}
+            self._tool.device_control(data, self._device['address'])
+    # 设置风速
+    def set_fan_mode(self, fan_mode: str) -> None:
+        if self.hvac_mode != HVACMode.OFF:
+            value = get_key_from_value(FAN_MODEL_100, fan_mode)
+            data = {'identifier': 'Windspeed', 'value': value}
+            self._tool.device_control(data, self._device['address'])
+
+class NexhomeClimateType101(NexhomeBasicClimate):
+    def __init__(self, device, entity_key, tool, coordinator):
+        super().__init__(device, entity_key, tool, coordinator)
+        self._modes = list(MODEL_MAP.values()) + [HVACMode.OFF]
+        self._fan_speeds = list(FAN_MODEL_101.values())
+
+    @property
+    def supported_features(self):
+        return ClimateEntityFeature.TARGET_TEMPERATURE | ClimateEntityFeature.FAN_MODE
+
+    @property
+    def hvac_mode(self) -> str:
+        if self._device.get(PowerSwitch) is not None:
+            power_switch = self._device.get(PowerSwitch)
+            if power_switch == '0':
+                mode = HVACMode.OFF
+            else:
+                mode = self._device.get(WorkMode)
+            return MODEL_MAP.get(mode, HVACMode.OFF)
+        else:
+            return HVACMode.OFF
+
+    @property
+    def fan_modes(self):
+        return self._fan_speeds
+
+    @property
+    def fan_mode(self):
+        if self._device.get(Windspeed) is not None:
+            value = self._device.get(Windspeed)
+            return FAN_MODEL_101.get(value, FAN_MODEL_101["0"])
+        else:
+            return FAN_MODEL_101["0"]
+
+    # 设置模式
+    def set_hvac_mode(self, hvac_mode: str) -> None:
+        hvac_mode = hvac_mode.lower()
+        if hvac_mode == HVACMode.OFF:
+            self.turn_off()
+        else:
+            # power_switch = get_value_by_identifier(self._property, 'PowerSwitch')
+            power_switch = self._device.get(PowerSwitch)
+            # 防止重复开启
+            if power_switch == '0':
+                self.turn_on()
+            value = get_key_from_value(MODEL_MAP, hvac_mode)
+            data = {'identifier': 'WorkMode', 'value': value}
+            self._tool.device_control(data, self._device['address'])
+    # 设置风速
+    def set_fan_mode(self, fan_mode: str) -> None:
+        if self.hvac_mode != HVACMode.OFF:
+            value = get_key_from_value(FAN_MODEL_101, fan_mode)
+            data = {'identifier': 'Windspeed', 'value': value}
+            self._tool.device_control(data, self._device['address'])
+
+
 class NexhomeClimateType107(NexhomeBasicClimate):
     def __init__(self, device, entity_key, tool, coordinator):
         super().__init__(device, entity_key, tool, coordinator)
@@ -319,3 +458,78 @@ class NexhomeClimateType107(NexhomeBasicClimate):
             value = get_key_from_value(FAN_MODEL_107, fan_mode)
             data = {'identifier': 'Windspeed', 'value': value}
             self._tool.device_control(data, self._device['address'])
+
+class NexhomeClimateType73(NexhomeBasicClimate):
+    def __init__(self, device, entity_key, tool, coordinator):
+        super().__init__(device, entity_key, tool, coordinator)
+        self._modes = list(MODEL_MAP.values()) + [HVACMode.OFF]
+        self._fan_speeds = list(FAN_MODEL_MAP.values())
+        self._wind_directions = list(WIND_DIRECTION_MAP.values())
+
+    @property
+    def supported_features(self):
+        return super().supported_features | ClimateEntityFeature.FAN_MODE | ClimateEntityFeature.SWING_MODE
+
+    @property
+    def hvac_mode(self) -> str:
+        if self._device.get(PowerSwitch) is not None:
+            power_switch = self._device.get(PowerSwitch)
+            if power_switch == '0':
+                mode = HVACMode.OFF
+            else:
+                mode = self._device.get(WorkMode)
+            return MODEL_MAP.get(mode, HVACMode.OFF)
+        else:
+            return HVACMode.OFF
+
+    @property
+    def fan_modes(self):
+        return self._fan_speeds
+
+    @property
+    def fan_mode(self):
+        if self._device.get(Windspeed) is not None:
+            value = self._device.get(Windspeed)
+            return FAN_MODEL_MAP.get(value, FAN_MODEL_MAP["0"])
+        else:
+            return FAN_MODEL_MAP["0"]
+        
+    @property
+    def swing_modes(self):
+        return self._wind_directions
+
+    @property
+    def swing_mode(self):
+        if self._device.get(WindDirection) is not None:
+            value = self._device.get(WindDirection)
+            return WIND_DIRECTION_MAP.get(value, WIND_DIRECTION_MAP["10"])  # 默认摆动
+        else:
+            return WIND_DIRECTION_MAP["10"]
+
+    # 设置模式
+    def set_hvac_mode(self, hvac_mode: str) -> None:
+        hvac_mode = hvac_mode.lower()
+        if hvac_mode == HVACMode.OFF:
+            self.turn_off()
+        else:
+            # power_switch = get_value_by_identifier(self._property, 'PowerSwitch')
+            power_switch = self._device.get(PowerSwitch)
+            # 防止重复开启
+            if power_switch == '0':
+                self.turn_on()
+            value = get_key_from_value(MODEL_MAP, hvac_mode)
+            data = {'identifier': 'WorkMode', 'value': value}
+            self._tool.device_control(data, self._device['address'])
+    # 设置风速
+    def set_fan_mode(self, fan_mode: str) -> None:
+        if self.hvac_mode != HVACMode.OFF:
+            value = get_key_from_value(FAN_MODEL_MAP, fan_mode)
+            data = {'identifier': 'Windspeed', 'value': value}
+            self._tool.device_control(data, self._device['address'])
+    # 设置风向
+    def set_swing_mode(self, swing_mode: str) -> None:
+        if self.hvac_mode != HVACMode.OFF:
+            value = get_key_from_value(WIND_DIRECTION_MAP, swing_mode)
+            if value:
+                data = {'identifier': 'WindDirection', 'value': value}
+                self._tool.device_control(data, self._device['address'])
