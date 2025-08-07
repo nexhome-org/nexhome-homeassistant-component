@@ -16,16 +16,16 @@ Control your NEXhome smart devices through the local area network
 
 | Device Model | Name                                       | Device Model | Name                                        | Device Model | Name                                        |
 |--------------|--------------------------------------------|--------------|---------------------------------------------|--------------|---------------------------------------------|
-| 1            | Light                                      | 2            | Dimming light                               | 3            | Air conditioner                             |
-| 5            | Temperature and humidity sensor            | 6            | Curtain                                     | 8            | Air quality sensor (PM2.5, CO2, HCHO, T, H, LUX) |
-| 10           | Fresh air                                  | 11           | Floor heating                               | 12           | Air detector (PM2.5, CO2, HCHO, T, H)       |
-| 13           | Air detector (CO2, T, H)                   | 14           | Air detector (PM2.5, CO2, T, H)             | 15           | Air detector (PM2.5, T, H)                  |
-| 29           | Fresh air (2-speed)                        | 30           | Curtain (on/off)                            | 35           | Floor heating (on/off + T only)             |
-| 51           | Color temperature light                    | 59           | Air detector (PM2.5, CO2, HCHO, T, H, VOC)  | 60           | Air detector (PM2.5, CO2, HCHO, T, H, PM10) |
-| 61           | Air detector (PM2.5, CO2, T, H, PM10)      | 62           | Air detector (PM2.5, T, H, PM10)            | 73           | Air conditioner (swing + 3-dir)             |
-| 75           | Fresh air (on/off)                         | 100          | Air conditioner (2-speed + auto)            | 101          | Air conditioner (5-speed + auto)            |
-| 102          | Air conditioner (7-speed + auto)           | 107          | Air conditioner (mode floor heating)      | 108          | Curtain (on/off/stop)                       |
-| 110          | Air detector (PM2.5, PM10, CO2, T, H, VOC) | 132          | Atomized glass                              | 133          | Exhaust fan                                 |
+| 1            | Light                                      | 14           | Air detector (PM2.5, CO2, T, H)             | 73           | Air conditioner (swing + 3-dir)             |
+| 2            | Dimming light                              | 15           | Air detector (PM2.5, T, H)                  | 75           | Fresh air (on/off)                          |
+| 3            | Air conditioner                            | 29           | Fresh air (2-speed)                         | 100          | Air conditioner (2-speed + auto)            |
+| 5            | Temperature and humidity sensor            | 30           | Curtain (on/off)                            | 101          | Air conditioner (5-speed + auto)            |
+| 6            | Curtain                                    | 35           | Floor heating (on/off + T only)             | 102          | Air conditioner (7-speed + auto)            |
+| 8            | Air quality sensor (PM2.5, CO2, HCHO, T, H, LUX) | 51      | Color temperature light                     | 107          | Air conditioner (mode floor heating)        |
+| 10           | Fresh air                                  | 59           | Air detector (PM2.5, CO2, HCHO, T, H, VOC)  | 108          | Curtain (on/off/stop)                       |
+| 11           | Floor heating                              | 60           | Air detector (PM2.5, CO2, HCHO, T, H, PM10) | 110          | Air detector (PM2.5, PM10, CO2, T, H, VOC)  |
+| 12           | Air detector (PM2.5, CO2, HCHO, T, H)      | 61           | Air detector (PM2.5, CO2, T, H, PM10)       | 132          | Atomized glass                              |
+| 13           | Air detector (CO2, T, H)                   | 62           | Air detector (PM2.5, T, H, PM10)            | 133          | Exhaust fan                                 |
 
 ## Install or Upgrade
 
