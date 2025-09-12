@@ -66,3 +66,35 @@ logger:
   logs:
     custom_components.NEXhome: debug
 ```
+
+## Issue Tracking & Support
+
+For detailed issue analysis and current status, see [ISSUE_ANALYSIS.md](ISSUE_ANALYSIS.md).
+
+### Common Issues & Solutions
+
+| Issue | Description | Solution |
+|-------|-------------|----------|
+| **Loading Failures** | Component fails to load after working previously | Check if central control gateway IP address has changed |
+| **State Sync Problems** | Physical switch changes don't reflect in HA | Verify network connectivity and consider polling delay |
+| **Device Discovery** | New devices not appearing in HA | Check device load ID and ensure it's in the supported list |
+| **Configuration Issues** | Setup problems with IP/IOTID | Default port is 8085, IOTID can be found in Engineering APP |
+
+### Getting Help
+
+1. **Check [Issues](https://github.com/nexhome-org/nexhome-homeassistant-component/issues)** for existing solutions
+2. **Enable debug logging** (see above) and check Home Assistant logs
+3. **Provide details** when reporting issues:
+   - Home Assistant version
+   - NEXhome component version  
+   - Central control gateway model and firmware
+   - Network setup (wired/wireless)
+   - Specific error messages or logs
+
+### Development Tools
+
+Use the issue monitoring tool for project management:
+```bash
+python3 tools/issue_monitor.py --stats
+```
+See [tools/README.md](tools/README.md) for more information.
