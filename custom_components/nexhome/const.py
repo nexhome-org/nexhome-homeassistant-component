@@ -9,6 +9,8 @@ SN_CONFIG = 'sn_input'
 IP_CONFIG = "ip_address"
 DEVICE_DATA = "device_list"
 DISCOVER = 'discover_obj'
+FILTER_MODE_CONFIG = "filter_mode"  # "include" 或 "exclude"
+FILTER_DEVICES_CONFIG = "filter_devices"  # 设备ID列表
 
 # 轮询时间
 TIME_NUMBER = 3

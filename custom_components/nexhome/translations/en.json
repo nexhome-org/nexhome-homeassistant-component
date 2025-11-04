@@ -12,6 +12,14 @@
                 },
                 "description": "Enter the IP address and IOTID of the central control (IOTID can be viewed through the construction APP or AIHome)",
                 "title": "NEXhome"
+            },
+            "device_filter": {
+                "data": {
+                    "filter_mode": "Filter Mode",
+                    "filter_devices": "Device List"
+                },
+                "description": "{instruction}\n\n{note}",
+                "title": "Filter Devices"
             }
         }
     }

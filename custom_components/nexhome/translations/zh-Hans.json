@@ -12,6 +12,14 @@
                 },
                 "description": "请输入中控的IP地址和IOTID（IOTID可以通过施工APP或AIHome查看）",
                 "title": "NEXhome"
+            },
+            "device_filter": {
+                "data": {
+                    "filter_mode": "筛选模式",
+                    "filter_devices": "设备列表"
+                },
+                "description": "{instruction}\n\n{note}",
+                "title": "筛选设备"
             }
         }
     }

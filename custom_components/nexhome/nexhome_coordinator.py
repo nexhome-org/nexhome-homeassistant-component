@@ -13,21 +13,30 @@ from homeassistant.helpers.update_coordinator import (
 from homeassistant.const import *
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
-from .const import DOMAIN
+from .const import DOMAIN, TIME_NUMBER
 
 _LOGGER = logging.getLogger(__name__)
 
 class NexhomeCoordinator(DataUpdateCoordinator):
     """Manages polling for state changes from the device"""
 
-    def __init__(self, hass, tool, params):
-        """Initialize the data update coordinator."""
+    def __init__(self, hass, tool, params, update_interval=None):
+        """Initialize the data update coordinator.
+        
+        Args:
+            hass: Home Assistant instance
+            tool: ServiceTool instance
+            params: Parameters for device property query
+            update_interval: Update interval in seconds (default: TIME_NUMBER from const)
+        """
+        if update_interval is None:
+            update_interval = TIME_NUMBER
         DataUpdateCoordinator.__init__(
             self,
             hass,
             _LOGGER,
             name=DOMAIN,
-            update_interval=timedelta(seconds=5),
+            update_interval=timedelta(seconds=update_interval),
         )
         self._tool = tool
         self._params = params

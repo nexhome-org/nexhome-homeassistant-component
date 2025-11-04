@@ -63,23 +63,12 @@ class NexhomeEntity(CoordinatorEntity, Entity):
         return self._config.get("icon")
     
     async def async_added_to_hass(self):
+        """当实体添加到Home Assistant时调用"""
         await super().async_added_to_hass()
-        await self._update_state()
-        self.hass.async_create_task(self.async_poll_properties())
-    
-    async def async_poll_properties(self):
-        await self._update_state()
-            
-    async def _update_state(self):
-        """更新状态"""
-        address = self._device['address']
-        identifiers = self._config["identifiers"]
-        params = [{'identifier': item, 'address': address} for item in identifiers]
-        propertys = await self._tool.getProperties(self.hass, params)  # 调用获取属性值的方法
-        if propertys and len(propertys) > 0:
-            for property in propertys:
-                self._device[property.get('identifier')] = property.get('value', None)
-                self.schedule_update_ha_state()
+        # 协调器会自动处理更新，首次添加时请求一次刷新确保数据实时
+        if self.coordinator.last_update_success is None:
+            # 如果协调器还没有更新过，请求一次刷新
+            await self.coordinator.async_request_refresh()
 
     @callback
     def _handle_coordinator_update(self) -> None:
