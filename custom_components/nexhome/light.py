@@ -1,18 +1,22 @@
 import logging
+from typing import Any
+
+from homeassistant.components.light import (
+    ATTR_BRIGHTNESS,
+    ATTR_COLOR_TEMP_KELVIN,
+    ColorMode,
+    LightEntity,
+)
+from homeassistant.const import Platform
+from homeassistant.config_entries import ConfigEntryState
+
+from .const import DEVICES, DOMAIN, PowerSwitch, Brightness, ColorTem, IP_CONFIG, SN_CONFIG
 from .nexhome_entity import NexhomeEntity
 from .nexhome_device import NEXHOME_DEVICE
 from .header import ServiceTool
-from .const import DEVICES, DOMAIN, PowerSwitch, Brightness, ColorTem, IP_CONFIG, SN_CONFIG
-from homeassistant.components.light import *
-from homeassistant.const import Platform
 from .nexhome_coordinator import NexhomeCoordinator
 from .coordinator_manager import CoordinatorManager
-from homeassistant.config_entries import ConfigEntryState
 
-from .const import (
-    DOMAIN,
-    DEVICES
-)
 _LOGGER = logging.getLogger(__name__)
 
 
@@ -62,6 +66,26 @@ class NexhomeLight(NexhomeEntity, LightEntity):
             return None
 
     @property
+    def supported_color_modes(self) -> set[ColorMode]:
+        """使用新的 color_modes API，替代已弃用的 SUPPORT_* 常量。"""
+        device_key = self._device.get("device_type_id")
+        if device_key == "51":
+            # 色温灯：支持色温调节
+            return {ColorMode.COLOR_TEMP}
+        # 调光灯：只支持亮度
+        return {ColorMode.BRIGHTNESS}
+
+    @property
+    def color_mode(self) -> ColorMode | None:
+        """当前颜色模式。"""
+        if not self.is_on:
+            return None
+        device_key = self._device.get("device_type_id")
+        if device_key == "51":
+            return ColorMode.COLOR_TEMP
+        return ColorMode.BRIGHTNESS
+
+    @property
     def color_temp(self):
         return round(1000000 / self.color_temp_kelvin)
 
@@ -88,36 +112,22 @@ class NexhomeLight(NexhomeEntity, LightEntity):
     def max_color_temp_kelvin(self) -> int:
         return 6500
 
-
-    @property
-    def supported_features(self) -> LightEntityFeature:
-        supported_features = SUPPORT_BRIGHTNESS
-        device_key = self._device.get("device_type_id")
-        if device_key == '51':
-            supported_features |= SUPPORT_COLOR_TEMP
-        return supported_features
-
     def turn_on(self, **kwargs: Any):
         if not self.is_on:
             data = {'identifier': PowerSwitch, 'value': '1'}
             self._tool.device_control(data, self._device['address'])
-        for key in kwargs:
-            value = kwargs.get(key)
-            if key == ATTR_BRIGHTNESS:
-                data = {'identifier': Brightness, 'value': value}
-                ss = self._tool.device_control(data, self._device['address'])
-                print(Brightness, data, ss.json())
-            if key == ATTR_COLOR_TEMP:
-                # 限制 mireds 值在设备支持的范围内
-                min_mireds = self.min_mireds
-                max_mireds = self.max_mireds
-                value = max(min(value, max_mireds), min_mireds)
 
-                # 转换为 Kelvin 并下发
-                kelvin_value = round(1000000 / value)
-                data = {'identifier': ColorTem, 'value': kelvin_value}
-                dd = self._tool.device_control(data, self._device['address'])
-                print(ColorTem, data, dd.json(), round(1000000 / value))
+        if ATTR_BRIGHTNESS in kwargs:
+            value = kwargs[ATTR_BRIGHTNESS]
+            data = {'identifier': Brightness, 'value': value}
+            self._tool.device_control(data, self._device['address'])
+
+        if ATTR_COLOR_TEMP_KELVIN in kwargs:
+            # 限制 Kelvin 值在设备支持的范围内
+            kelvin_value = int(kwargs[ATTR_COLOR_TEMP_KELVIN])
+            kelvin_value = max(min(kelvin_value, self.max_color_temp_kelvin), self.min_color_temp_kelvin)
+            data = {'identifier': ColorTem, 'value': kelvin_value}
+            self._tool.device_control(data, self._device['address'])
 
 
 

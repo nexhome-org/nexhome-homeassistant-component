@@ -4,6 +4,7 @@ from .const import DEVICES, ALL_PLATFORM, Default_Device, SN_CONFIG, IP_CONFIG, 
 from .header import ServiceTool
 from .nexhome_discover import discover, send_test_message
 from .utils import set_hass_obj
+from .coordinator_manager import CoordinatorManager
 # 在组件全局作用域中存储监听器引用
 # discoverObj = None
 
@@ -28,6 +29,8 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     # 卸载平台
     for platform in ALL_PLATFORM:
         await hass.config_entries.async_forward_entry_unload(entry, platform)
+    # 清理跨 reload 保留的缓存（Home Assistant reload 不会重启 Python 进程）
+    await CoordinatorManager.async_remove_instance(entry.entry_id)
     return True
 
 

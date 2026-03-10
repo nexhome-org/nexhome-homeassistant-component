@@ -42,9 +42,10 @@ class NexhomeInputNumber(NexhomeEntity, NumberEntity):
         super().__init__(device, entity_key, coordinator)
         self._state = False
         self._tool = tool
-        self._max_value = self._config.get("max")
-        self._min_value = self._config.get("min")
-        self._step_value = self._config.get("step")
+        # 使用原生数值范围属性，兼容新的 NumberEntity API
+        self._attr_native_max_value = self._config.get("max")
+        self._attr_native_min_value = self._config.get("min")
+        self._attr_native_step = self._config.get("step")
 
     @property
     def native_value(self):
@@ -53,9 +54,15 @@ class NexhomeInputNumber(NexhomeEntity, NumberEntity):
         else:
             return 0
 
-    def set_value(self, value):
+    async def async_set_native_value(self, value: float) -> None:
+        """使用新的异步接口设置数值，替代已弃用的 set_value。"""
         _LOGGER.info("NEXhome 设置为 %s", value)
         self._device[Location] = value
         data = {'identifier': 'Location', 'value': value}
-        self._tool.device_control(data, self._device['address'])
-        self.schedule_update_ha_state()
+        # 在执行器中调用同步 HTTP 控制，避免阻塞事件循环
+        await self.hass.async_add_executor_job(
+            self._tool.device_control,
+            data,
+            self._device['address'],
+        )
+        self.async_write_ha_state()

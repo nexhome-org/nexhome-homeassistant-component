@@ -1,4 +1,5 @@
 """协调器管理器 - 按设备共享协调器以减少请求频率"""
+import asyncio
 import logging
 from typing import Dict, Set
 from .nexhome_coordinator import NexhomeCoordinator
@@ -26,6 +27,31 @@ class CoordinatorManager:
         if config_entry_id not in cls._instances:
             cls._instances[config_entry_id] = cls(hass, tool)
         return cls._instances[config_entry_id]
+
+    @classmethod
+    async def async_remove_instance(cls, config_entry_id: str) -> None:
+        """移除并清理指定配置条目的协调器管理器实例（支持集成 reload）"""
+        instance = cls._instances.pop(config_entry_id, None)
+        if instance is None:
+            return
+        await instance.async_shutdown()
+
+    async def async_shutdown(self) -> None:
+        """关闭所有协调器并清理内部缓存"""
+        coordinators = list(self._coordinators.values())
+        self._coordinators.clear()
+        self._device_identifiers.clear()
+
+        for coordinator in coordinators:
+            shutdown = getattr(coordinator, "async_shutdown", None)
+            if shutdown is None:
+                continue
+            try:
+                result = shutdown()
+                if asyncio.iscoroutine(result):
+                    await result
+            except Exception as err:
+                _LOGGER.debug("关闭协调器失败: %s", err)
     
     def get_or_create_coordinator(self, device_address: str, identifiers: list) -> NexhomeCoordinator:
         """
